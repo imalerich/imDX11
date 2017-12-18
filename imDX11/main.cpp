@@ -1,29 +1,38 @@
 // main.cpp
 // Ian Malerich
 
-#include <windows.h>
+#include <Windows.h>
+#include "d3dutil.h"
 
 #define WIN32_LEAN_AND_MEAN
 
-const LPCTSTR WndClassName = L"firstwindow";
 HWND hwnd = NULL;
-
-const unsigned screen_w = 800;
-const unsigned screen_h = 600;
+LPCTSTR WndClassName = "firstwindow";
 
 int MessageLoop();
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-bool InitializeWindow(HINSTANCE hInstance, int ShowWnd, unsigned width, unsigned height, bool windowed);
+bool InitWindow(HINSTANCE hInstance, int ShowWnd, unsigned width, unsigned height, bool windowed);
 
 int WINAPI WinMain(
-	HINSTANCE hInstance, HINSTANCE hPrevInstance,
-	LPSTR lpCmdLine, int nShowCmd) {
-	if (!InitializeWindow(hInstance, nShowCmd, screen_w, screen_h, true)) {
-		MessageBox(0, L"Window Initialization - Failed", L"Error", MB_OK);
+		HINSTANCE hInstance, HINSTANCE hPrevInstance,
+		LPSTR lpCmdLine, int nShowCmd) {
+	if (!InitWindow(hInstance, nShowCmd, SCREEN_W, SCREEN_H, true)) {
+		MessageBox(0, "Window Initialization - Failed", "Error", MB_OK);
 		return -1;
 	}
 
+	if (!InitD3D11(hInstance)) {
+		MessageBox(0, "Direct3D Initialization - Failed", "Error", MB_OK);
+		return -2;
+	}
+
+	if (!InitScene()) {
+		MessageBox(0, "Scene Initialization - Failed", "Error", MB_OK);
+		return -3;
+	}
+
 	MessageLoop();
+	ReleaseObjects();
 	return 0;
 }
 
@@ -31,10 +40,15 @@ int MessageLoop() {
 	MSG msg;
 	ZeroMemory(&msg, sizeof(MSG));
 	while (true) {
+		// process windows messages
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-			if (msg.message == WM_QUIT) { break;  }
+			if (msg.message == WM_QUIT) { break; }
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
+
+		} else { // run game code
+			UpdateScene();
+			DrawScene();
 		}
 	}
 
@@ -45,7 +59,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	switch (msg) {
 	case WM_KEYDOWN: 
 		if (wParam == VK_ESCAPE) {
-			if (MessageBox(0, L"Are you sure you want to exit?", L"Exit", 
+			if (MessageBox(0, "Are you sure you want to exit?", "Exit", 
 					MB_YESNO | MB_ICONQUESTION) == IDYES) {
 				DestroyWindow(hwnd);
 			}
@@ -61,7 +75,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
-bool InitializeWindow(HINSTANCE hInstance, int ShowWnd, unsigned width, unsigned height, bool windowed) {
+bool InitWindow(HINSTANCE hInstance, int ShowWnd, unsigned width, unsigned height, bool windowed) {
 	// we need to give windows a bunch of information about the windo we want to create
 	WNDCLASSEX wc;
 	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 2);
@@ -78,15 +92,15 @@ bool InitializeWindow(HINSTANCE hInstance, int ShowWnd, unsigned width, unsigned
 	wc.cbWndExtra = NULL;
 
 	if (!RegisterClassEx(&wc)) {
-		MessageBox(NULL, L"Error registering class", L"Error", MB_OK | MB_ICONERROR);
+		MessageBox(NULL, "Error registering class", "Error", MB_OK | MB_ICONERROR);
 		return 1;
 	}
 
-	hwnd = CreateWindowEx(NULL, WndClassName, L"imDX11", WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT, CW_USEDEFAULT, screen_w, screen_h, NULL, NULL, hInstance, NULL);
+	hwnd = CreateWindowEx(NULL, WndClassName, "imDX11", WS_OVERLAPPEDWINDOW,
+		CW_USEDEFAULT, CW_USEDEFAULT, SCREEN_W, SCREEN_H, NULL, NULL, hInstance, NULL);
 
 	if (!hwnd) {
-		MessageBox(NULL, L"Error - Failed to create window", L"Error", MB_OK | MB_ICONERROR);
+		MessageBox(NULL, "Error - Failed to create window", "Error", MB_OK | MB_ICONERROR);
 		return false;
 	}
 
