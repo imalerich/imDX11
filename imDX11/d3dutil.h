@@ -6,8 +6,8 @@
 #pragma comment(lib, "d3dx11.lib")
 
 #include <Windows.h>
-#include <d3d11.h>
 
+#include <d3d11.h>
 #include <D3DX11.h>
 #include <D3DX11async.h>
 
@@ -30,6 +30,7 @@ extern ID3D11RenderTargetView * view;
 // Buffers
 //
 
+extern ID3D11Buffer * indexBuffer;
 extern ID3D11Buffer * vertexBuffer;
 extern ID3D11VertexShader * vShader;
 extern ID3D11PixelShader * pShader;

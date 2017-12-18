@@ -10,6 +10,7 @@ IDXGISwapChain * SwapChain;
 ID3D11DeviceContext * context;
 ID3D11RenderTargetView * view;
 
+ID3D11Buffer * indexBuffer;
 ID3D11Buffer * vertexBuffer;
 ID3D11VertexShader * vShader;
 ID3D11PixelShader * pShader;
@@ -73,8 +74,10 @@ void ReleaseObjects() {
 	view->Release();
 
 	vertexBuffer->Release();
+	indexBuffer->Release();
 	VS_Buffer->Release();
 	PS_Buffer->Release();
+
 	vShader->Release();
 	pShader->Release();
 	vLayout->Release();
@@ -101,24 +104,47 @@ bool InitScene() {
 	//
 
 	VertexData v[] = {
-		VertexData(VECTOR3(0.0f, 0.5f, 0.5f), RED),
-		VertexData(VECTOR3(0.0f, -0.5f, 0.5f), GREEN),
-		VertexData(VECTOR3(-0.5f, -0.5f, 0.5f), BLUE)
+		VertexData(VECTOR3(-0.5, -0.5f, 0.5f), RED),
+		VertexData(VECTOR3(-0.5,  0.5f, 0.5f), GREEN),
+		VertexData(VECTOR3( 0.5,  0.5f, 0.5f), BLUE),
+		VertexData(VECTOR3( 0.5, -0.5f, 0.5f), WHITE),
 	};
 
+	DWORD i[] = {
+		0, 1, 2, 0, 2, 3
+	};
+
+	// create the vertex buffer
 	D3D11_BUFFER_DESC vBufferDesc;
 	ZeroMemory(&vBufferDesc, sizeof(vBufferDesc));
 
 	vBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vBufferDesc.ByteWidth = sizeof(VertexData) * 3;
+	vBufferDesc.ByteWidth = sizeof(VertexData) * 4;
 	vBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	vBufferDesc.CPUAccessFlags = 0;
 	vBufferDesc.MiscFlags = 0;
 
+	// create the index buffer
+	D3D11_BUFFER_DESC iBufferDesc;
+	ZeroMemory(&iBufferDesc, sizeof(iBufferDesc));
+
+	iBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	iBufferDesc.ByteWidth = sizeof(DWORD) * 2 * 3;
+	iBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	iBufferDesc.CPUAccessFlags = 0;
+	iBufferDesc.MiscFlags = 0;
+
+	// bind the vertex buffer
 	D3D11_SUBRESOURCE_DATA vBufferData;
 	ZeroMemory(&vBufferData, sizeof(vBufferData));
 	vBufferData.pSysMem = v;
 	hr = device->CreateBuffer(&vBufferDesc, &vBufferData, &vertexBuffer);
+
+	// bind the index buffer
+	D3D11_SUBRESOURCE_DATA iInitData;
+	iInitData.pSysMem = i;
+	device->CreateBuffer(&iBufferDesc, &iInitData, &indexBuffer);
+	context->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	//
 	// set the active vertex buffer
@@ -159,7 +185,7 @@ void DrawScene() {
 
 	// draw the current active vertex buffer
 	// using the currently active pixel & vertex shaders
-	context->Draw(3, 0);
+	context->DrawIndexed(6, 0, 0);
 
 	SwapChain->Present(0, 0);
 }
