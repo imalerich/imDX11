@@ -30,13 +30,17 @@ extern ID3D11RenderTargetView * view;
 // Buffers
 //
 
-extern ID3D11Buffer * indexBuffer;
-extern ID3D11Buffer * vertexBuffer;
 extern ID3D11VertexShader * vShader;
 extern ID3D11PixelShader * pShader;
 extern ID3D11InputLayout * vLayout;
 extern ID3D10Blob * VS_Buffer;
 extern ID3D10Blob * PS_Buffer;
+
+extern ID3D11DepthStencilView * depthView;
+extern ID3D11Texture2D * depthBuffer;
+
+extern ID3D11Buffer * indexBuffer;
+extern ID3D11Buffer * vertexBuffer;
 
 //
 // Utility Functions

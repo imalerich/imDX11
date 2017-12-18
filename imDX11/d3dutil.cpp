@@ -10,13 +10,17 @@ IDXGISwapChain * SwapChain;
 ID3D11DeviceContext * context;
 ID3D11RenderTargetView * view;
 
-ID3D11Buffer * indexBuffer;
-ID3D11Buffer * vertexBuffer;
 ID3D11VertexShader * vShader;
 ID3D11PixelShader * pShader;
 ID3D11InputLayout * vLayout;
 ID3D10Blob * VS_Buffer;
 ID3D10Blob * PS_Buffer;
+
+ID3D11DepthStencilView * depthView;
+ID3D11Texture2D * depthBuffer;
+
+ID3D11Buffer * indexBuffer;
+ID3D11Buffer * vertexBuffer;
 
 bool InitD3D11(HINSTANCE hInstance) {
 	//
@@ -62,7 +66,25 @@ bool InitD3D11(HINSTANCE hInstance) {
 	// create & set the render target
 	hr = device->CreateRenderTargetView(backBuffer, NULL, &view);
 	backBuffer->Release();
-	context->OMSetRenderTargets(1, &view, NULL);
+
+	// create the depth/stencil buffer
+	D3D11_TEXTURE2D_DESC depthDesc;
+
+	depthDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	depthDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthDesc.SampleDesc.Quality = 0;
+	depthDesc.SampleDesc.Count = 1;
+	depthDesc.CPUAccessFlags = 0;
+	depthDesc.Height = SCREEN_H;
+	depthDesc.Width = SCREEN_W;
+	depthDesc.MipLevels = 1;
+	depthDesc.ArraySize = 1;
+	depthDesc.MiscFlags = 0;
+
+	device->CreateTexture2D(&depthDesc, NULL, &depthBuffer);
+	device->CreateDepthStencilView(depthBuffer, NULL, &depthView);
+	context->OMSetRenderTargets(1, &view, depthView);
 
 	return true;
 }
@@ -72,6 +94,9 @@ void ReleaseObjects() {
 	context->Release();
 	device->Release();
 	view->Release();
+
+	depthView->Release();
+	depthBuffer->Release();
 
 	vertexBuffer->Release();
 	indexBuffer->Release();
@@ -165,10 +190,12 @@ bool InitScene() {
 	D3D11_VIEWPORT viewport;
 	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
 
+	viewport.Height = SCREEN_H;
+	viewport.Width = SCREEN_W;
+	viewport.MinDepth = 0.0f;
+	viewport.MaxDepth = 1.0f;
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
-	viewport.Width = SCREEN_W;
-	viewport.Height = SCREEN_H;
 
 	context->RSSetViewports(1, &viewport);
 
@@ -182,6 +209,7 @@ void UpdateScene() {
 void DrawScene() {
 	float bgColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	context->ClearRenderTargetView(view, bgColor);
+	context->ClearDepthStencilView(depthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0.0f);
 
 	// draw the current active vertex buffer
 	// using the currently active pixel & vertex shaders
