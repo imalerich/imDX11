@@ -10,8 +10,9 @@
 #include <d3d11.h>
 #include "glm/glm.hpp"
 
-#define VECTOR3 glm::vec3
-#define COLOR glm::vec4
+typedef glm::vec3 VECTOR3;
+typedef glm::vec4 VECTOR4;
+typedef glm::vec4 COLOR;
 
 #define WHITE COLOR(1.0f, 1.0f, 1.0f, 1.0f)
 #define BLACK COLOR(0.0f, 0.0f, 0.0f, 1.0f)

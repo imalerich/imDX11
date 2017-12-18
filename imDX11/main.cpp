@@ -10,7 +10,7 @@
 #define WIN32_LEAN_AND_MEAN
 
 HWND hwnd = NULL;
-LPCTSTR WndClassName = "firstwindow";
+LPCTSTR WndClassName = L"firstwindow";
 
 std::unique_ptr<Engine> engine;
 
@@ -22,17 +22,17 @@ int WINAPI WinMain(
 		HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		LPSTR lpCmdLine, int nShowCmd) {
 	if (!InitWindow(hInstance, nShowCmd, SCREEN_W, SCREEN_H, true)) {
-		MessageBox(0, "Window Initialization - Failed", "Error", MB_OK);
+		MessageBox(0, L"Window Initialization - Failed", L"Error", MB_OK);
 		return -1;
 	}
 
 	if (!InitD3D11(hInstance)) {
-		MessageBox(0, "Direct3D Initialization - Failed", "Error", MB_OK);
+		MessageBox(0, L"Direct3D Initialization - Failed", L"Error", MB_OK);
 		return -2;
 	}
 
 	if (!InitScene()) {
-		MessageBox(0, "Scene Initialization - Failed", "Error", MB_OK);
+		MessageBox(0, L"Scene Initialization - Failed", L"Error", MB_OK);
 		return -3;
 	}
 
@@ -67,7 +67,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	switch (msg) {
 	case WM_KEYDOWN: 
 		if (wParam == VK_ESCAPE) {
-			if (MessageBox(0, "Are you sure you want to exit?", "Exit", 
+			if (MessageBox(0, L"Are you sure you want to exit?", L"Exit", 
 					MB_YESNO | MB_ICONQUESTION) == IDYES) {
 				DestroyWindow(hwnd);
 			}
@@ -100,15 +100,15 @@ bool InitWindow(HINSTANCE hInstance, int ShowWnd, unsigned width, unsigned heigh
 	wc.cbWndExtra = NULL;
 
 	if (!RegisterClassEx(&wc)) {
-		MessageBox(NULL, "Error registering class", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(NULL, L"Error registering class", L"Error", MB_OK | MB_ICONERROR);
 		return 1;
 	}
 
-	hwnd = CreateWindowEx(NULL, WndClassName, "imDX11", WS_OVERLAPPEDWINDOW,
+	hwnd = CreateWindowEx(NULL, WndClassName, L"imDX11", WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT, SCREEN_W, SCREEN_H, NULL, NULL, hInstance, NULL);
 
 	if (!hwnd) {
-		MessageBox(NULL, "Error - Failed to create window", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(NULL, L"Error - Failed to create window", L"Error", MB_OK | MB_ICONERROR);
 		return false;
 	}
 

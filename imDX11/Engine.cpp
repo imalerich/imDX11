@@ -1,7 +1,7 @@
 #include "Engine.h"
 
 Engine::Engine() {
-	test = std::make_unique<Model>(Model::MakeSquare(1.0f, 1.0f));
+	test = std::make_unique<Model>("Models/monkey.obj");
 }
 
 void Engine::Release() {
@@ -23,7 +23,7 @@ void Engine::UpdateCamera() {
 	glm::vec3 camtarget(0.0f, 0.0f, 0.0f);
 	glm::vec3 camup(0.0f, 1.0f, 0.0f);
 
-	glm::mat4 proj = glm::perspective(glm::radians(90.0f),
+	glm::mat4 proj = glm::perspective(glm::radians(45.0f),
 		(float)SCREEN_W / (float)SCREEN_H, 0.1f, 100.0f);
 	glm::mat4 view = glm::lookAt(campos, camtarget, camup);
 	glm::mat4 world = glm::mat4();

@@ -44,4 +44,7 @@ private:
 
 	ID3D11Buffer * indexBuffer;
 	ID3D11Buffer * vertexBuffer;
+
+	void GenVertexBuffer(const void * data);
+	void GenIndexBuffer(const void * data);
 };
