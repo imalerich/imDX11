@@ -5,6 +5,10 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dx11.lib")
 
+#ifndef GLM_FORCE_LEFT_HANDED
+#define GLM_FORCE_LEFT_HANDED
+#endif
+
 #include <Windows.h>
 
 #include <d3d11.h>
@@ -13,6 +17,7 @@
 
 #include "data.hpp"
 #include "glm/glm.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
 #ifndef M_PI

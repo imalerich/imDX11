@@ -3,6 +3,10 @@
 
 #pragma once
 
+#ifndef GLM_FORCE_LEFT_HANDED
+#define GLM_FORCE_LEFT_HANDED
+#endif
+
 #include <d3d11.h>
 #include "glm/glm.hpp"
 

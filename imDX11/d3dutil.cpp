@@ -228,24 +228,24 @@ void buildWVP() {
 	glm::vec3 camtarget(0.0f, 0.0f, 0.0f);
 	glm::vec3 camup(0.0f, 1.0f, 0.0f);
 
-	glm::mat4 proj = glm::perspective(0.4f * M_PI,
+	glm::mat4 proj = glm::perspective(glm::radians(90.0f),
 		(float)SCREEN_W / (float)SCREEN_H, 0.1f, 100.0f);
 	glm::mat4 view = glm::lookAt(campos, camtarget, camup);
 	glm::mat4 world = glm::mat4();
 
-	glm::mat4 WVP = proj * view * world;
+	glm::mat4 WVP = glm::transpose(proj) * view * glm::transpose(world);
 
-	cbPerObj.WVP = glm::mat4();
-	context->UpdateSubresource(cbPerObjectBuffer, 0, NULL, &WVP, 0, 0);
+	cbPerObj.WVP = WVP;
+	context->UpdateSubresource(cbPerObjectBuffer, 0, NULL, &cbPerObj, 0, 0);
 	context->VSSetConstantBuffers(0, 1, &cbPerObjectBuffer);
 }
 
 void DrawScene() {
-	buildWVP();
-
 	float bgColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	context->ClearRenderTargetView(view, bgColor);
 	context->ClearDepthStencilView(depthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0.0f);
+
+	buildWVP();
 
 	// draw the current active vertex buffer
 	// using the currently active pixel & vertex shaders
