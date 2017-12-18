@@ -113,8 +113,13 @@ bool InitScene() {
 	// create & activate the vertex & pixel shaders
 	//
 
-	hr = D3DX11CompileFromFile(L"shaders.hlsl", 0, 0, "vMain", "vs_5_0", 0, 0, 0, &VS_Buffer, 0, 0);
-	hr = D3DX11CompileFromFile(L"shaders.hlsl", 0, 0, "pMain", "ps_5_0", 0, 0, 0, &PS_Buffer, 0, 0);
+	ID3DBlob * error;
+	hr = D3DX11CompileFromFile(L"shaders.hlsl", 0, 0, "vMain", "vs_5_0", 
+		0, 0, 0, &VS_Buffer, &error, 0);
+	if (error) { OutputDebugStringA((char*)error->GetBufferPointer()); exit(-1); }
+	hr = D3DX11CompileFromFile(L"shaders.hlsl", 0, 0, "pMain", "ps_5_0", 
+		0, 0, 0, &PS_Buffer, &error, 0);
+	if (error) { OutputDebugStringA((char*)error->GetBufferPointer()); exit(-1); }
 
 	hr = device->CreateVertexShader(VS_Buffer->GetBufferPointer(), 
 		VS_Buffer->GetBufferSize(), NULL, &vShader);

@@ -24,8 +24,8 @@
 #define M_PI 3.14159265f
 #endif
 
-#define SCREEN_W 800
-#define SCREEN_H 600
+#define SCREEN_W 1200
+#define SCREEN_H 800
 
 extern HWND hwnd;
 extern HRESULT hr;
