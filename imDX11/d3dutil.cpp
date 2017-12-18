@@ -22,9 +22,6 @@ ID3D11Texture2D * depthBuffer;
 ID3D11Buffer * cbPerObjectBuffer;
 cbPerObject cbPerObj;
 
-ID3D11Buffer * indexBuffer;
-ID3D11Buffer * vertexBuffer;
-
 bool InitD3D11(HINSTANCE hInstance) {
 	//
 	// Buffer Description
@@ -101,8 +98,6 @@ void ReleaseObjects() {
 	depthView->Release();
 	depthBuffer->Release();
 
-	vertexBuffer->Release();
-	indexBuffer->Release();
 	VS_Buffer->Release();
 	PS_Buffer->Release();
 
@@ -129,60 +124,7 @@ bool InitScene() {
 	context->VSSetShader(vShader, 0, 0);
 	context->PSSetShader(pShader, 0, 0);
 
-	//
-	// create the vertex buffer
-	//
-
-	VertexData v[] = {
-		VertexData(VECTOR3(-0.5, -0.5f, 0.5f), RED),
-		VertexData(VECTOR3(-0.5,  0.5f, 0.5f), GREEN),
-		VertexData(VECTOR3( 0.5,  0.5f, 0.5f), BLUE),
-		VertexData(VECTOR3( 0.5, -0.5f, 0.5f), WHITE),
-	};
-
-	DWORD i[] = {
-		0, 1, 2, 0, 2, 3
-	};
-
-	// create the vertex buffer
-	D3D11_BUFFER_DESC vBufferDesc;
-	ZeroMemory(&vBufferDesc, sizeof(vBufferDesc));
-
-	vBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vBufferDesc.ByteWidth = sizeof(VertexData) * 4;
-	vBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vBufferDesc.CPUAccessFlags = 0;
-	vBufferDesc.MiscFlags = 0;
-
-	// create the index buffer
-	D3D11_BUFFER_DESC iBufferDesc;
-	ZeroMemory(&iBufferDesc, sizeof(iBufferDesc));
-
-	iBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	iBufferDesc.ByteWidth = sizeof(DWORD) * 2 * 3;
-	iBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	iBufferDesc.CPUAccessFlags = 0;
-	iBufferDesc.MiscFlags = 0;
-
-	// bind the vertex buffer
-	D3D11_SUBRESOURCE_DATA vBufferData;
-	ZeroMemory(&vBufferData, sizeof(vBufferData));
-	vBufferData.pSysMem = v;
-	hr = device->CreateBuffer(&vBufferDesc, &vBufferData, &vertexBuffer);
-
-	// bind the index buffer
-	D3D11_SUBRESOURCE_DATA iInitData;
-	iInitData.pSysMem = i;
-	device->CreateBuffer(&iBufferDesc, &iInitData, &indexBuffer);
-	context->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-	//
-	// set the active vertex buffer
-	//
-
-	UINT stride = sizeof(VertexData), offset = 0;
-	context->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
-
+	// set the shader layout to render indexed triangles
 	hr = device->CreateInputLayout(layout, numElements, VS_Buffer->GetBufferPointer(),
 		VS_Buffer->GetBufferSize(), &vLayout);
 	context->IASetInputLayout(vLayout);
@@ -219,37 +161,8 @@ bool InitScene() {
 	return true;
 }
 
-void UpdateScene() {
-	// TODO
-}
-
-void buildWVP() {
-	glm::vec3 campos(0.0f, 0.0f, -0.5f);
-	glm::vec3 camtarget(0.0f, 0.0f, 0.0f);
-	glm::vec3 camup(0.0f, 1.0f, 0.0f);
-
-	glm::mat4 proj = glm::perspective(glm::radians(90.0f),
-		(float)SCREEN_W / (float)SCREEN_H, 0.1f, 100.0f);
-	glm::mat4 view = glm::lookAt(campos, camtarget, camup);
-	glm::mat4 world = glm::mat4();
-
-	glm::mat4 WVP = glm::transpose(proj) * view * glm::transpose(world);
-
-	cbPerObj.WVP = WVP;
-	context->UpdateSubresource(cbPerObjectBuffer, 0, NULL, &cbPerObj, 0, 0);
-	context->VSSetConstantBuffers(0, 1, &cbPerObjectBuffer);
-}
-
-void DrawScene() {
+void ClearContext() {
 	float bgColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	context->ClearRenderTargetView(view, bgColor);
 	context->ClearDepthStencilView(depthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0.0f);
-
-	buildWVP();
-
-	// draw the current active vertex buffer
-	// using the currently active pixel & vertex shaders
-	context->DrawIndexed(6, 0, 0);
-
-	SwapChain->Present(0, 0);
 }

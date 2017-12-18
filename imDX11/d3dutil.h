@@ -55,9 +55,6 @@ extern ID3D11Texture2D * depthBuffer;
 extern ID3D11Buffer * cbPerObjectBuffer;
 extern cbPerObject cbPerObj;
 
-extern ID3D11Buffer * indexBuffer;
-extern ID3D11Buffer * vertexBuffer;
-
 //
 // Utility Functions
 //
@@ -66,6 +63,4 @@ bool InitD3D11(HINSTANCE hInstance);
 void ReleaseObjects();
 
 bool InitScene();
-void UpdateScene();
-void DrawScene();
-void buildWVP();
+void ClearContext();

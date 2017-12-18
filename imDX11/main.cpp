@@ -2,12 +2,17 @@
 // Ian Malerich
 
 #include <Windows.h>
+#include <memory>
+
 #include "d3dutil.h"
+#include "Engine.h"
 
 #define WIN32_LEAN_AND_MEAN
 
 HWND hwnd = NULL;
 LPCTSTR WndClassName = "firstwindow";
+
+std::unique_ptr<Engine> engine;
 
 int MessageLoop();
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -31,7 +36,10 @@ int WINAPI WinMain(
 		return -3;
 	}
 
+	engine = std::make_unique<Engine>();
+
 	MessageLoop();
+	engine->Release();
 	ReleaseObjects();
 	return 0;
 }
@@ -47,8 +55,8 @@ int MessageLoop() {
 			DispatchMessage(&msg);
 
 		} else { // run game code
-			UpdateScene();
-			DrawScene();
+			engine->UpdateScene();
+			engine->DrawScene();
 		}
 	}
 
