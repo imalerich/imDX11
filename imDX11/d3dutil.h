@@ -11,6 +11,14 @@
 #include <D3DX11.h>
 #include <D3DX11async.h>
 
+#include "data.hpp"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
+#ifndef M_PI
+#define M_PI 3.14159265f
+#endif
+
 #define SCREEN_W 800
 #define SCREEN_H 600
 
@@ -39,6 +47,9 @@ extern ID3D10Blob * PS_Buffer;
 extern ID3D11DepthStencilView * depthView;
 extern ID3D11Texture2D * depthBuffer;
 
+extern ID3D11Buffer * cbPerObjectBuffer;
+extern cbPerObject cbPerObj;
+
 extern ID3D11Buffer * indexBuffer;
 extern ID3D11Buffer * vertexBuffer;
 
@@ -52,3 +63,4 @@ void ReleaseObjects();
 bool InitScene();
 void UpdateScene();
 void DrawScene();
+void buildWVP();

@@ -1,3 +1,6 @@
+// data.hpp
+// Ian Malerich
+
 #pragma once
 
 #include <d3d11.h>
@@ -20,6 +23,11 @@
 #define MAGENTA COLOR(1.0f, 0.0f, 1.0f, 1.0f)
 #define YELLOW COLOR(1.0f, 1.0f, 0.0f, 1.0f)
 #define CYAN COLOR(0.0f, 1.0f, 1.0f, 1.0f)
+
+class cbPerObject {
+public:
+	glm::mat4 WVP;
+};
 
 class VertexData {
 public:

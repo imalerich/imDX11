@@ -19,6 +19,9 @@ ID3D10Blob * PS_Buffer;
 ID3D11DepthStencilView * depthView;
 ID3D11Texture2D * depthBuffer;
 
+ID3D11Buffer * cbPerObjectBuffer;
+cbPerObject cbPerObj;
+
 ID3D11Buffer * indexBuffer;
 ID3D11Buffer * vertexBuffer;
 
@@ -106,6 +109,8 @@ void ReleaseObjects() {
 	vShader->Release();
 	pShader->Release();
 	vLayout->Release();
+
+	cbPerObjectBuffer->Release();
 }
 
 bool InitScene() {
@@ -199,6 +204,18 @@ bool InitScene() {
 
 	context->RSSetViewports(1, &viewport);
 
+	// create the matrix buffer to include with vertices
+	D3D11_BUFFER_DESC cbbd;
+	ZeroMemory(&cbbd, sizeof(D3D11_BUFFER_DESC));
+
+	cbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbbd.Usage = D3D11_USAGE_DEFAULT;
+	cbbd.ByteWidth = sizeof(cbPerObj);
+	cbbd.CPUAccessFlags = 0;
+	cbbd.MiscFlags = 0;
+
+	hr = device->CreateBuffer(&cbbd, NULL, &cbPerObjectBuffer);
+
 	return true;
 }
 
@@ -206,7 +223,26 @@ void UpdateScene() {
 	// TODO
 }
 
+void buildWVP() {
+	glm::vec3 campos(0.0f, 0.0f, -0.5f);
+	glm::vec3 camtarget(0.0f, 0.0f, 0.0f);
+	glm::vec3 camup(0.0f, 1.0f, 0.0f);
+
+	glm::mat4 proj = glm::perspective(0.4f * M_PI,
+		(float)SCREEN_W / (float)SCREEN_H, 0.1f, 100.0f);
+	glm::mat4 view = glm::lookAt(campos, camtarget, camup);
+	glm::mat4 world = glm::mat4();
+
+	glm::mat4 WVP = proj * view * world;
+
+	cbPerObj.WVP = glm::mat4();
+	context->UpdateSubresource(cbPerObjectBuffer, 0, NULL, &WVP, 0, 0);
+	context->VSSetConstantBuffers(0, 1, &cbPerObjectBuffer);
+}
+
 void DrawScene() {
+	buildWVP();
+
 	float bgColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	context->ClearRenderTargetView(view, bgColor);
 	context->ClearDepthStencilView(depthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0.0f);
