@@ -38,10 +38,11 @@ VS_OUTPUT vMain(float4 pos : POSITION,
 
 float4 pMain(VS_OUTPUT input) : SV_TARGET{
 	// TODO - Lighting information should be handed as input to the shader.
-	float3 LDIR = float3(0.0f, 0.0f, 1.0f);
+	float3 LDIR = -float3(0.0f, 0.0f, 1.0f);
 
 	float3 norm = normalTex.Sample(normalState, input.Texcoords).xyz;
 	norm = norm * 2.0 - 1.0f;
+	norm = float3(0.0f, 0.0f, 1.0f);
 
 	float3x3 TBN = transpose(float3x3(
 		normalize(input.Tangent),
@@ -50,9 +51,7 @@ float4 pMain(VS_OUTPUT input) : SV_TARGET{
 	));
 
 	norm = normalize(mul(norm, TBN));
-
 	float s = max(dot(LDIR, norm), 0.1f);
 
-	float4 diffuse = diffuseTex.Sample(diffuseState, input.Texcoords) * s;
-	return diffuse;
+	return diffuseTex.Sample(diffuseState, input.Texcoords) * s;
 }

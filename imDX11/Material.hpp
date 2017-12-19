@@ -28,7 +28,7 @@ public:
 			aiString path("Models/");
 			aiString file;
 
-			mat->GetTexture(aiTextureType_DIFFUSE, 0, &file);
+			mat->GetTexture(aiTextureType_NORMALS, 0, &file);
 			path.Append(file.C_Str());
 
 			normals = std::make_shared<Texture>(path.C_Str());
