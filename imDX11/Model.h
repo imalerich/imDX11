@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 
+#include "Material.hpp"
 #include "d3dutil.h"
 #include "Mesh.h"
 
@@ -24,12 +25,7 @@ public:
 	 */
 	void Draw();
 
-	/**
-	 * Creates a square mesh centered around the origin
-	 * with the given width and height.
-	 */
-	static Model MakeSquare(float W, float H);
-
 private:
 	std::vector<std::shared_ptr<Mesh>> meshes;
+	std::vector<std::shared_ptr<Material>> materials;
 };

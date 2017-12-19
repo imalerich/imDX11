@@ -42,23 +42,29 @@ typedef glm::vec4 COLOR;
 class cbPerObject {
 public:
 	glm::mat4 WVP;
+	glm::mat4 W;
 };
 
 class VertexData {
 public:
 	VertexData() : pos(VECTOR3_ZERO), norm(VECTOR3_ZERO), texcoord(VECTOR2_ZERO) { }
-	VertexData(glm::vec3 Pos, glm::vec3 Norm, glm::vec2 Texcoord = VECTOR2_ZERO) 
-		: pos(Pos), norm(Norm), texcoord(Texcoord) { }
+	VertexData(glm::vec3 Pos, glm::vec3 Norm, glm::vec3 Tan, glm::vec3 Binorm, 
+			glm::vec2 Texcoord = VECTOR2_ZERO) 
+		: pos(Pos), norm(Norm), tan(Tan), binorm(Binorm), texcoord(Texcoord) { }
 
 	glm::vec3 pos;
 	glm::vec3 norm;
+	glm::vec3 tan;
+	glm::vec3 binorm;
 	glm::vec2 texcoord;
 };
 
 const D3D11_INPUT_ELEMENT_DESC layout[] = {
 	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 48, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 };
 
 const UINT numElements = ARRAYSIZE(layout);

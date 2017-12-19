@@ -1,6 +1,9 @@
 #pragma once
 
 #include <stdlib.h>
+#include <memory>
+
+#include "Material.hpp"
 #include "d3dutil.h"
 
 class Mesh {
@@ -10,6 +13,10 @@ public:
 	inline const size_t GetVertexCount() { return vertexCount;  }
 	inline const size_t GetIndexCount() { return indexCount;  }
 	inline const size_t GetFaceCount() { return indexCount / 3;  }
+
+	inline void SetMaterial(std::shared_ptr<Material> Material) {
+		material = Material;
+	}
 
 	/**
 	 * Release all buffers stored by this mesh.
@@ -48,4 +55,6 @@ private:
 
 	ID3D11Buffer * indexBuffer;
 	ID3D11Buffer * vertexBuffer;
+
+	std::shared_ptr<Material> material;
 };

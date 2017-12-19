@@ -16,6 +16,7 @@ void Mesh::SetActiveBuffers() {
 
 void Mesh::Draw() {
 	SetActiveBuffers();
+	if (material) { material->SetActive(); }
 	context->DrawIndexed(indexCount, 0, 0);
 }
 

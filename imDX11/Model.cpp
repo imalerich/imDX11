@@ -20,7 +20,10 @@ Model::Model(const char * Filename) {
 		exit(-1);
 	}
 
-	// TODO - Load more than one mesh per  model.
+	for (int m = 0; m < scene->mNumMaterials; m++) {
+		materials.push_back(std::make_shared<Material>(scene->mMaterials[m]));
+	}
+
 	for (int m = 0; m < scene->mNumMeshes; m++) {
 		auto mesh = scene->mMeshes[m];
 		auto vertexCount = mesh->mNumVertices;
@@ -31,6 +34,9 @@ Model::Model(const char * Filename) {
 
 		for (int i = 0; i < vertexCount; i++) {
 			auto pos = mesh->mVertices[i];
+			auto tan = mesh->mTangents[i];
+			auto binorm = mesh->mBitangents[i];
+
 			auto norm = VECTOR3_ZERO;
 			if (mesh->mNormals) {
 				auto tmp = mesh->mNormals[i];
@@ -43,7 +49,8 @@ Model::Model(const char * Filename) {
 				texcoord = VECTOR2(tmp.x, tmp.y);
 			}
 
-			vert[i] = VertexData(VECTOR3(pos.x, pos.y, pos.z), norm, texcoord);
+			vert[i] = VertexData(VECTOR3(pos.x, pos.y, pos.z), norm, 
+				VECTOR3(tan.x, tan.y, tan.z), VECTOR3(binorm.x, binorm.y, binorm.z), texcoord);
 		}
 
 		for (int i = 0; i < indexCount; i++) {
@@ -53,6 +60,7 @@ Model::Model(const char * Filename) {
 
 		// create the mesh using the vertex & index buffers we just generated
 		auto tmp = std::make_shared<Mesh>(vertexCount, indexCount);
+		if (materials.size()) { tmp->SetMaterial(materials[mesh->mMaterialIndex]); }
 		tmp->GenVertexBuffer(vert);
 		tmp->GenIndexBuffer(idx);
 		meshes.push_back(tmp);
@@ -66,32 +74,14 @@ void Model::Release() {
 	for (auto mesh : meshes) {
 		mesh->Release();
 	}
+
+	for (auto mat : materials) {
+		mat->Release();
+	}
 }
 
 void Model::Draw() {
 	for (auto mesh : meshes) {
 		mesh->Draw();
 	}
-}
-
-Model Model::MakeSquare(float Width, float Height) {
-	const VECTOR3 norm = VECTOR3(0.0f, 0.0f, -1.0f);
-	VertexData v[] = {
-		VertexData(VECTOR3(-Width/2.0f, -Height/2.0f, 0.5f), norm),
-		VertexData(VECTOR3(-Width/2.0f,  Height/2.0f, 0.5f), norm),
-		VertexData(VECTOR3( Width/2.0f,  Height/2.0f, 0.5f), norm),
-		VertexData(VECTOR3( Width/2.0f, -Height/2.0f, 0.5f), norm),
-	};
-
-	DWORD i[] = {
-		0, 1, 2, 0, 2, 3
-	};
-
-	std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(4, 6);
-	mesh->GenVertexBuffer(v);
-	mesh->GenIndexBuffer(i);
-
-	Model model;
-	model.meshes.push_back(mesh);
-	return model;
 }

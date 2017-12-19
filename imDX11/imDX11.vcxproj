@@ -162,6 +162,7 @@
     <ClInclude Include="d3dutil.h" />
     <ClInclude Include="data.hpp" />
     <ClInclude Include="Engine.h" />
+    <ClInclude Include="Material.hpp" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Texture.hpp" />
