@@ -35,7 +35,7 @@ void Engine::UpdateCamera() {
 	glm::mat4 WVP = proj * view * world;
 
 	cbPerObj.WVP = glm::transpose(WVP);
-	cbPerObj.W = world;
+	cbPerObj.IW = glm::inverse(world);
 	context->UpdateSubresource(cbPerObjectBuffer, 0, NULL, &cbPerObj, 0, 0);
 	context->VSSetConstantBuffers(0, 1, &cbPerObjectBuffer);
 }

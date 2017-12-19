@@ -42,7 +42,7 @@ typedef glm::vec4 COLOR;
 class cbPerObject {
 public:
 	glm::mat4 WVP;
-	glm::mat4 W;
+	glm::mat4 IW;
 };
 
 class VertexData {

@@ -9,7 +9,7 @@ SamplerState normalState;
 
 cbuffer cbPerObject {
 	float4x4 WVP;
-	float4x4 W;
+	float4x4 IW;
 };
 
 struct VS_OUTPUT {
@@ -27,13 +27,9 @@ VS_OUTPUT vMain(float4 pos : POSITION,
 
 	output.Pos = mul(pos, WVP);
 
-	// output.Normal = mul(float4(norm, 0.0f), W).xyz;
-	// output.Tangent = mul(float4(tan, 0.0f), W).xyz;
-	// output.Binormal = mul(float4(binorm, 0.0f), W).xyz;
-
-	output.Normal = norm;
-	output.Tangent = tan;
-	output.Binormal = binorm;
+	output.Normal = mul(float4(norm, 0.0f), IW).xyz;
+	output.Tangent = mul(float4(tan, 0.0f), IW).xyz;
+	output.Binormal = mul(float4(binorm, 0.0f), IW).xyz;
 
 	output.Texcoords = texcoords;
 	
@@ -45,7 +41,7 @@ float4 pMain(VS_OUTPUT input) : SV_TARGET{
 	float3 LDIR = float3(0.0f, 0.0f, 1.0f);
 
 	float3 norm = normalTex.Sample(normalState, input.Texcoords).xyz;
-	norm = norm * 2.0 - float3(1.0f, 1.0f, 1.0f);
+	norm = norm * 2.0 - 1.0f;
 
 	float3x3 TBN = transpose(float3x3(
 		normalize(input.Tangent),
@@ -53,7 +49,7 @@ float4 pMain(VS_OUTPUT input) : SV_TARGET{
 		normalize(input.Normal)
 	));
 
-	norm = mul(TBN, normalize(norm));
+	norm = normalize(mul(norm, TBN));
 
 	float s = max(dot(LDIR, norm), 0.1f);
 
