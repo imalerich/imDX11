@@ -73,23 +73,23 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>C:\Program Files\Assimp\lib\x86;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Program Files\Assimp\include\;C:\Users\JHyberger\source\repos\imDX11\imDX11\glm;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\JHyberger\Documents\GitHub\libraries;C:\Program Files\Assimp\include\;C:\Users\JHyberger\source\repos\imDX11\imDX11\glm;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Program Files\Assimp\include\;C:\Users\JHyberger\source\repos\imDX11\imDX11\glm;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\JHyberger\Documents\GitHub\libraries;C:\Program Files\Assimp\include\;C:\Users\JHyberger\source\repos\imDX11\imDX11\glm;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
     <LibraryPath>C:\Program Files\Assimp\lib\x64;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>C:\Program Files\Assimp\lib\x86;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Program Files\Assimp\include\;C:\Users\JHyberger\source\repos\imDX11\imDX11\glm;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\JHyberger\Documents\GitHub\libraries;C:\Program Files\Assimp\include\;C:\Users\JHyberger\source\repos\imDX11\imDX11\glm;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>C:\Program Files\Assimp\lib\x64;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Program Files\Assimp\include\;C:\Users\JHyberger\source\repos\imDX11\imDX11\glm;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\JHyberger\Documents\GitHub\libraries;C:\Program Files\Assimp\include\;C:\Users\JHyberger\source\repos\imDX11\imDX11\glm;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -164,6 +164,7 @@
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="Texture.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

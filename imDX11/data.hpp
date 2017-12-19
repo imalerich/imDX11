@@ -8,11 +8,15 @@
 #endif
 
 #include <d3d11.h>
-#include "glm/glm.hpp"
+#include <glm/glm.hpp>
 
+typedef glm::vec2 VECTOR2;
 typedef glm::vec3 VECTOR3;
 typedef glm::vec4 VECTOR4;
 typedef glm::vec4 COLOR;
+
+#define VECTOR2_ZERO VECTOR2(0.0f, 0.0f)
+#define VECTOR2_ONE VECTOR2(1.0f, 1.0f)
 
 #define VECTOR3_ZERO VECTOR3(0.0f, 0.0f, 0.0f)
 #define VECTOR3_ONE VECTOR3(1.0f, 1.0f, 1.0f)
@@ -42,19 +46,19 @@ public:
 
 class VertexData {
 public:
-	VertexData() : pos(0.0f, 0.0f, 0.0f) { }
-	VertexData(glm::vec3 Pos, glm::vec3 Norm, glm::vec4 Color) 
-		: pos(Pos), norm(Norm), color(Color) { }
+	VertexData() : pos(VECTOR3_ZERO), norm(VECTOR3_ZERO), texcoord(VECTOR2_ZERO) { }
+	VertexData(glm::vec3 Pos, glm::vec3 Norm, glm::vec2 Texcoord = VECTOR2_ZERO) 
+		: pos(Pos), norm(Norm), texcoord(Texcoord) { }
 
 	glm::vec3 pos;
 	glm::vec3 norm;
-	glm::vec4 color;
+	glm::vec2 texcoord;
 };
 
 const D3D11_INPUT_ELEMENT_DESC layout[] = {
 	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 };
 
 const UINT numElements = ARRAYSIZE(layout);

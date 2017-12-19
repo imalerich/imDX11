@@ -37,7 +37,13 @@ Model::Model(const char * Filename) {
 				norm = VECTOR3(tmp.x, tmp.y, tmp.z);
 			}
 
-			vert[i] = VertexData(VECTOR3(pos.x, pos.y, pos.z), norm, WHITE);
+			auto texcoord = VECTOR2_ZERO;
+			if (mesh->mTextureCoords[0]) {
+				auto tmp = mesh->mTextureCoords[0][i];
+				texcoord = VECTOR2(tmp.x, tmp.y);
+			}
+
+			vert[i] = VertexData(VECTOR3(pos.x, pos.y, pos.z), norm, texcoord);
 		}
 
 		for (int i = 0; i < indexCount; i++) {
@@ -71,10 +77,10 @@ void Model::Draw() {
 Model Model::MakeSquare(float Width, float Height) {
 	const VECTOR3 norm = VECTOR3(0.0f, 0.0f, -1.0f);
 	VertexData v[] = {
-		VertexData(VECTOR3(-Width/2.0f, -Height/2.0f, 0.5f), norm, RED),
-		VertexData(VECTOR3(-Width/2.0f,  Height/2.0f, 0.5f), norm, GREEN),
-		VertexData(VECTOR3( Width/2.0f,  Height/2.0f, 0.5f), norm, BLUE),
-		VertexData(VECTOR3( Width/2.0f, -Height/2.0f, 0.5f), norm, WHITE),
+		VertexData(VECTOR3(-Width/2.0f, -Height/2.0f, 0.5f), norm),
+		VertexData(VECTOR3(-Width/2.0f,  Height/2.0f, 0.5f), norm),
+		VertexData(VECTOR3( Width/2.0f,  Height/2.0f, 0.5f), norm),
+		VertexData(VECTOR3( Width/2.0f, -Height/2.0f, 0.5f), norm),
 	};
 
 	DWORD i[] = {
