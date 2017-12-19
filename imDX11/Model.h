@@ -1,17 +1,16 @@
 #pragma once
 
 #include <stdlib.h>
+#include <memory>
+#include <vector>
+
 #include "d3dutil.h"
+#include "Mesh.h"
 
 class Model {
 public:
 	Model();
-	Model(size_t VertexCount, size_t IndexCount);
 	Model(const char * Filename);
-
-	inline const size_t GetVertexCount() { return vertexCount;  }
-	inline const size_t GetIndexCount() { return indexCount;  }
-	inline const size_t GetFaceCount() { return indexCount / 3;  }
 
 	/**
 	 * Release all buffers stored by this model.
@@ -19,16 +18,9 @@ public:
 	void Release();
 
 	/**
-	 * Set this models vertex and index buffers as 
-	 * active in the current context.
-	 */
-	void SetActiveBuffers();
-
-	/**
-	 * Draw's this model to the current context.
-	 * This method will call SetActiveBuffers() on this
-	 * model, therefore that function does NOT need to be 
-	 * called before a call to Draw().
+	 * Loops through each mesh in the model, 
+	 * and Draw's them to the current DX11 
+	 * graphics context.
 	 */
 	void Draw();
 
@@ -39,12 +31,5 @@ public:
 	static Model MakeSquare(float W, float H);
 
 private:
-	size_t vertexCount;
-	size_t indexCount;
-
-	ID3D11Buffer * indexBuffer;
-	ID3D11Buffer * vertexBuffer;
-
-	void GenVertexBuffer(const void * data);
-	void GenIndexBuffer(const void * data);
+	std::vector<std::shared_ptr<Mesh>> meshes;
 };

@@ -24,6 +24,6 @@ VS_OUTPUT vMain(float4 pos : POSITION, float3 norm : NORMAL , float4 color : COL
 float4 pMain(VS_OUTPUT input) : SV_TARGET{
 	// TODO - Lighting information should be handed as input to the shader.
 	float3 LDIR = float3(0.0f, 0.0f, -1.0f);
-	float diffuse = max(dot(LDIR, input.Norm), 0.0f);
+	float diffuse = max(dot(LDIR, input.Norm), 0.1f);
 	return input.Color * diffuse;
 }
